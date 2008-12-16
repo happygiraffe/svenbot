@@ -21,6 +21,7 @@ spec = Gem::Specification.new do |s|
   s.require_path = "lib"
   s.bindir = "bin"
   s.add_dependency 'xmpp4r-simple'
+  s.add_dependency 'xmpp4r'
   # This stops a warning about it not being specified...
   s.rubyforge_project = ' '
 end
