@@ -9,16 +9,20 @@ require 'spec/rake/spectask'
 spec = Gem::Specification.new do |s|
   s.name = 'svenbot'
   s.version = '0.0.1'
+  s.homepage = 'http://github.com/happygiraffe/svenbot/'
   s.has_rdoc = true
   s.extra_rdoc_files = ['README', 'LICENSE']
-  s.summary = 'Your summary here'
+  s.summary = 'A jabber bot for subversion commits.'
   s.description = s.summary
-  s.author = ''
-  s.email = ''
+  s.author = 'Dominic Mitchell'
+  s.email = 'dom@happygiraffe.net'
   # s.executables = ['your_executable_here']
   s.files = %w(LICENSE README Rakefile) + Dir.glob("{bin,lib,spec}/**/*")
   s.require_path = "lib"
   s.bindir = "bin"
+  s.add_dependency 'xmpp4r-simple'
+  # This stops a warning about it not being specified...
+  s.rubyforge_project = ' '
 end
 
 Rake::GemPackageTask.new(spec) do |p|
