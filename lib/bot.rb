@@ -23,6 +23,8 @@ class Bot
     return "You will get commits for: #{user.paths.join(', ')}"
   end
 
+  # Remove messages about commits to a certain +path+.  If not specified,
+  # +path+ defaults to "/".
   def unregister(jid, path='/')
     user = @users.delete jid
     if user && @paths[path]
@@ -34,6 +36,7 @@ class Bot
 
   private
 
+  # Return an existing user or create a new one.
   def get_user(jid)
     @users[jid] ||= User.new(jid)
   end
