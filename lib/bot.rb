@@ -1,6 +1,9 @@
 require 'message'
 require 'set'
 
+# Keep state tracking who is interested in what commits.  Users can register
+# or unregister for paths.  Commits to those paths will result in a message
+# being emitted.
 class Bot
   # A hash of registered users.
   attr_reader :users
@@ -35,12 +38,14 @@ class Bot
     return "You will no longer get commits for: #{path}"
   end
 
+  # Return a list of paths you are interested in commits for.
   def cmd_list(jid)
     user = @users[jid]
     return 'You are not listening to any commits' unless user
     return "You are listening for commits to: #{user.paths.join(', ')}"
   end
 
+  # Return a list of messages to send out for +commit+.
   def commit_messages(commit)
     msg = "#{commit.user} committed #{commit.id}: #{commit.message}"
     users_interested_in_path(commit.path_prefix).collect do |u|
