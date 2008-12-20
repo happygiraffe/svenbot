@@ -31,10 +31,7 @@ class Bot
   # +path+ defaults to "/".
   def cmd_unregister(jid, path='/')
     user = @users.delete jid
-    if user && @paths[path]
-      @paths[path].delete user
-      @paths.delete path if @paths[path].empty?
-    end
+    remove_path_for_user(path, user) if user
     return "You will no longer get commits for: #{path}"
   end
 
@@ -65,6 +62,15 @@ class Bot
   def add_path_for_user(path, user)
     @paths[path] ||= []
     @paths[path] << user
+  end
+
+  # Remove user from a given path.  If there are no further users listening
+  # for a given path, remove the whole path.
+  def remove_path_for_user(path, user)
+    if @paths[path]
+      @paths[path].delete user
+      @paths.delete path if @paths[path].empty?
+    end
   end
 
   # Return a list of users for a given path.
