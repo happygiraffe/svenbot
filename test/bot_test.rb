@@ -4,13 +4,17 @@ require 'test/unit'
 require 'bot'
 
 class BotTest < Test::Unit::TestCase
+  attr_reader :bot
   # Sample data
   A_JID = 'me@example.com'
   # More sample data
   ANOTHER_JID = 'you@example.com'
 
+  def setup
+    @bot = Bot.new
+  end
+
   def test_register_user
-    bot = Bot.new
     bot.cmd_register A_JID, '/'
 
     assert_equal 1, bot.users.size
@@ -21,7 +25,6 @@ class BotTest < Test::Unit::TestCase
   end
 
   def test_register_message
-    bot = Bot.new
     msg = bot.cmd_register A_JID, '/proj1'
     assert_equal 'You will get commits for: /proj1', msg
 
@@ -30,7 +33,6 @@ class BotTest < Test::Unit::TestCase
   end
 
   def test_register_two_users_same_path
-    bot = Bot.new
     bot.cmd_register A_JID, '/proj'
     bot.cmd_register ANOTHER_JID, '/proj'
 
@@ -43,7 +45,6 @@ class BotTest < Test::Unit::TestCase
   end
 
   def test_register_two_paths
-    bot = Bot.new
     bot.cmd_register A_JID, '/proj1'
     bot.cmd_register A_JID, '/proj2'
 
@@ -56,7 +57,6 @@ class BotTest < Test::Unit::TestCase
   end
 
   def test_unregister
-    bot = Bot.new
     bot.cmd_register A_JID, '/proj1'
     bot.cmd_unregister A_JID, '/proj1'
 
@@ -65,14 +65,12 @@ class BotTest < Test::Unit::TestCase
   end
 
   def test_unregister_message
-    bot = Bot.new
     bot.cmd_register A_JID, '/proj1'
     msg = bot.cmd_unregister A_JID, '/proj1'
     assert_equal 'You will no longer get commits for: /proj1', msg
   end
 
   def test_list
-    bot = Bot.new
     bot.cmd_register A_JID, '/proj1'
     bot.cmd_register A_JID, '/proj2'
     msg = bot.cmd_list A_JID
@@ -80,7 +78,6 @@ class BotTest < Test::Unit::TestCase
   end
 
   def test_list_none
-    bot = Bot.new
     msg = bot.cmd_list A_JID
     assert_equal 'You are not listening to any commits', msg
   end
