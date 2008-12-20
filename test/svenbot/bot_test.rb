@@ -5,6 +5,8 @@ $:.unshift File.join(File.dirname(__FILE__),'..','lib')
 
 require 'test/unit'
 require 'svenbot/bot'
+require 'svenbot/repo'
+require 'tmpdir'
 
 module Svenbot
   class BotTest < Test::Unit::TestCase
@@ -15,7 +17,7 @@ module Svenbot
     ANOTHER_JID = 'you@example.com'
 
     def setup
-      @bot = Bot.new
+      @bot = Bot.new(Repo.new("#{Dir.tmpdir}/repo"))
     end
 
     def test_register_message

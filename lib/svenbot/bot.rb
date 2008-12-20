@@ -5,7 +5,8 @@ module Svenbot
   class Bot
     include Message
 
-    def initialize
+    def initialize(repo)
+      @repo = repo
       @user_manager = UserManager.new
     end
 
