@@ -5,7 +5,7 @@ require 'user'
 # Keep state tracking who is interested in what commits.  Users can register
 # or unregister for paths.  Commits to those paths will result in a message
 # being emitted.
-class Bot
+class UserManager
   # A hash of registered users.
   attr_reader :users
   # A hash of paths we are interested in, and which users map to them.
@@ -13,7 +13,7 @@ class Bot
 
   include Message
 
-  # Create a new Bot instance
+  # Create a new UserManager instance
   def initialize
     @users = {}
     @paths = {}

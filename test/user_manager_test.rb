@@ -2,9 +2,9 @@ $:.unshift File.join(File.dirname(__FILE__),'..','lib')
 
 require 'test/unit'
 require 'commit'
-require 'bot'
+require 'user_manager'
 
-class BotTest < Test::Unit::TestCase
+class UserManagerTest < Test::Unit::TestCase
   attr_reader :bot
   # Sample data
   A_JID = 'me@example.com'
@@ -12,7 +12,7 @@ class BotTest < Test::Unit::TestCase
   ANOTHER_JID = 'you@example.com'
 
   def setup
-    @bot = Bot.new
+    @bot = UserManager.new
   end
 
   def test_register_user
