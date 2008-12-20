@@ -34,6 +34,12 @@ class Bot
     return "You will no longer get commits for: #{path}"
   end
 
+  def cmd_list(jid)
+    user = @users[jid]
+    return 'You are not listening to any commits' unless user
+    return "You are listening for commits to: #{user.paths.join(', ')}"
+  end
+
   private
 
   # Return an existing user or create a new one.
