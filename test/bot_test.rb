@@ -42,7 +42,7 @@ class BotTest < Test::Unit::TestCase
     assert_equal ['/proj'], bot.users[ANOTHER_JID].paths
 
     assert_equal 1, bot.paths.size
-    assert_equal [A_JID, ANOTHER_JID], jids_for_path(bot, '/proj')
+    assert_equal [A_JID, ANOTHER_JID], jids_for_path(bot, '/proj').sort
   end
 
   def test_register_two_paths
