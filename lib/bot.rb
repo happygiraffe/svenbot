@@ -67,15 +67,20 @@ class Bot
     @paths[path] << user
   end
 
+  # Return a list of users for a given path.
+  def users_for_path(path)
+    @paths[path] || []
+  end
+
   # Return a list of all users who are interested in a particular path.
   def users_interested_in_path(path)
     interested = Set.new
     while path != "/"
-      interested.merge @paths[path] if @paths[path]
+      interested.merge users_for_path(path)
       path = File.dirname path
     end
     # Be nice to get rid of this special case.
-    interested.merge @paths[path] if @paths[path]
+    interested.merge users_for_path(path)
     return interested
   end
 end
