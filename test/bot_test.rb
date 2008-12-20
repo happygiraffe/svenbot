@@ -92,6 +92,14 @@ class BotTest < Test::Unit::TestCase
     assert_equal 'arthur committed 12345: fix bug 42', msgs[0].body
   end
 
+  def test_commit_messages_understand_prefix
+    bot.cmd_register(A_JID, '/')
+    c = Commit.new('12345', 'arthur', '/proj1/README', 'fix bug 42')
+    msgs = bot.commit_messages c
+    assert_equal 1, msgs.size
+    assert_equal A_JID, msgs[0].to.to_s
+  end
+
   private
   
   def jids_for_path(bot, path)

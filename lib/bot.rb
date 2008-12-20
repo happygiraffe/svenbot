@@ -1,4 +1,5 @@
 require 'message'
+require 'set'
 
 class Bot
   # A hash of registered users.
@@ -42,8 +43,8 @@ class Bot
 
   def commit_messages(commit)
     msg = "#{commit.user} committed #{commit.id}: #{commit.message}"
-    @paths[commit.path_prefix].collect do |user|
-      html_message(msg).set_to(user.jid)
+    users_interested_in_path(commit.path_prefix).collect do |u|
+      html_message(msg).set_to(u.jid)
     end
   end
 
@@ -59,5 +60,17 @@ class Bot
   def add_path_for_user(path, user)
     @paths[path] ||= []
     @paths[path] << user
+  end
+
+  # Return a list of all users who are interested in a particular path.
+  def users_interested_in_path(path)
+    interested = Set.new
+    while path != "/"
+      interested.merge @paths[path] if @paths[path]
+      path = File.dirname path
+    end
+    # Be nice to get rid of this special case.
+    interested.merge @paths[path] if @paths[path]
+    return interested
   end
 end
