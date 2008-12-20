@@ -58,21 +58,20 @@ module Svenbot
       assert_equal 0, um.paths.size
     end
 
-    def test_commit_messages
+    def test_users_for_path
       um.register(A_JID, '/proj1')
-      c = Commit.new('12345', 'arthur', '/proj1', 'fix bug 42')
-      msgs = um.commit_messages c
-      assert_equal 1, msgs.size
-      assert_equal A_JID, msgs[0].to.to_s
-      assert_equal 'arthur committed 12345: fix bug 42', msgs[0].body
+      assert_equal [A_JID], um.users_for('/proj1')
     end
 
-    def test_commit_messages_understand_prefix
+    def test_users_for_path_understands_prefixes
       um.register(A_JID, '/')
-      c = Commit.new('12345', 'arthur', '/proj1/README', 'fix bug 42')
-      msgs = um.commit_messages c
-      assert_equal 1, msgs.size
-      assert_equal A_JID, msgs[0].to.to_s
+      assert_equal [A_JID], um.users_for('/proj1')
+    end
+
+    def test_users_for_path_with_multiple_users
+      um.register(A_JID, '/proj1')
+      um.register(ANOTHER_JID, '/proj1')
+      assert_equal [A_JID, ANOTHER_JID], um.users_for('/proj1')
     end
 
     def test_paths_for

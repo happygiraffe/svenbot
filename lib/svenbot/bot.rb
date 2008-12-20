@@ -1,7 +1,10 @@
+require 'svenbot/message'
 require 'svenbot/user_manager'
 
 module Svenbot
   class Bot
+    include Message
+
     def initialize
       @user_manager = UserManager.new
     end
@@ -28,6 +31,14 @@ module Svenbot
     def cmd_unregister(jid, path='/')
       @user_manager.unregister jid, path
       return "You will no longer get commits for: #{path}"
+    end
+
+    # Return a list of messages to send out for +commit+.
+    def commit_messages(commit)
+      msg = "#{commit.user} committed #{commit.id}: #{commit.message}"
+      @user_manager.users_for(commit.path_prefix).collect do |jid|
+        html_message(msg).set_to(jid)
+      end
     end
 
   end

@@ -1,5 +1,4 @@
 require 'set'
-require 'svenbot/message'
 require 'svenbot/user'
 
 module Svenbot
@@ -11,8 +10,6 @@ module Svenbot
     attr_reader :users
     # A hash of paths we are interested in, and which users map to them.
     attr_reader :paths
-
-    include Message
 
     # Create a new UserManager instance
     def initialize
@@ -34,17 +31,22 @@ module Svenbot
       remove_path_for_user path, user if user
     end
 
-    # Return a list of messages to send out for +commit+.
-    def commit_messages(commit)
-      msg = "#{commit.user} committed #{commit.id}: #{commit.message}"
-      users_interested_in_path(commit.path_prefix).collect do |u|
-        html_message(msg).set_to(u.jid)
-      end
-    end
-
     # Return a sorted list of paths that +jid+ has registered.
     def paths_for(jid)
       get_user(jid).paths.sort
+    end
+
+    # Return a sorted list of jids that have registered an interest in +path+
+    def users_for(path)
+      interested = Set.new
+      while path != "/"
+        interested.merge users_for_path(path)
+        path = File.dirname path
+      end
+      # Be nice to get rid of this special case.
+      interested.merge users_for_path(path)
+      # Return jids, as User is an impl detail
+      return interested.collect { |u| u.jid }.sort
     end
 
     private
@@ -73,18 +75,6 @@ module Svenbot
     # Return a list of users for a given path.
     def users_for_path(path)
       @paths[path] || Set.new
-    end
-
-    # Return a list of all users who are interested in a particular path.
-    def users_interested_in_path(path)
-      interested = Set.new
-      while path != "/"
-        interested.merge users_for_path(path)
-        path = File.dirname path
-      end
-      # Be nice to get rid of this special case.
-      interested.merge users_for_path(path)
-      return interested
     end
   end
 end
