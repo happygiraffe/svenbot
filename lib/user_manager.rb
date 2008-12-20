@@ -21,26 +21,16 @@ class UserManager
 
   # Register +jid+ as interested in commits to +path+.  If path isn't
   # specified, default to "everything" (i.e. "/")
-  def cmd_register(jid, path='/')
+  def register(jid, path)
     user = get_user(jid)
     user << path
     add_path_for_user path, user
-    return "You will get commits for: #{user.paths.join(', ')}"
   end
 
-  # Remove messages about commits to a certain +path+.  If not specified,
-  # +path+ defaults to "/".
-  def cmd_unregister(jid, path='/')
+  # Remove messages about commits to a certain +path+.
+  def unregister(jid, path)
     user = @users.delete jid
-    remove_path_for_user(path, user) if user
-    return "You will no longer get commits for: #{path}"
-  end
-
-  # Return a list of paths you are interested in commits for.
-  def cmd_list(jid)
-    user = @users[jid]
-    return 'You are not listening to any commits' unless user
-    return "You are listening for commits to: #{user.paths.join(', ')}"
+    remove_path_for_user path, user if user
   end
 
   # Return a list of messages to send out for +commit+.
@@ -49,6 +39,11 @@ class UserManager
     users_interested_in_path(commit.path_prefix).collect do |u|
       html_message(msg).set_to(u.jid)
     end
+  end
+
+  # Return a sorted list of paths that +jid+ has registered.
+  def paths_for(jid)
+    get_user(jid).paths.sort
   end
 
   private
