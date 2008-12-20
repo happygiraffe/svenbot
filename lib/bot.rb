@@ -60,7 +60,7 @@ class Bot
   # Fill in the reverse mapping so we know which paths are of interest to
   # which users.
   def add_path_for_user(path, user)
-    @paths[path] ||= []
+    @paths[path] ||= Set.new
     @paths[path] << user
   end
 
@@ -75,7 +75,7 @@ class Bot
 
   # Return a list of users for a given path.
   def users_for_path(path)
-    @paths[path] || []
+    @paths[path] || Set.new
   end
 
   # Return a list of all users who are interested in a particular path.
