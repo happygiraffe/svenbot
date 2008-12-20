@@ -1,5 +1,6 @@
 require 'message'
 require 'set'
+require 'user'
 
 # Keep state tracking who is interested in what commits.  Users can register
 # or unregister for paths.  Commits to those paths will result in a message
