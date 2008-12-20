@@ -16,7 +16,7 @@ class Bot
 
   # Register +jid+ as interested in commits to +path+.  If path isn't
   # specified, default to "everything" (i.e. "/")
-  def register(jid, path='/')
+  def cmd_register(jid, path='/')
     user = get_user(jid)
     user << path
     add_path_for_user path, user
@@ -25,7 +25,7 @@ class Bot
 
   # Remove messages about commits to a certain +path+.  If not specified,
   # +path+ defaults to "/".
-  def unregister(jid, path='/')
+  def cmd_unregister(jid, path='/')
     user = @users.delete jid
     if user && @paths[path]
       @paths[path].delete user
