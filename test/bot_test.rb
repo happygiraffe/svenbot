@@ -1,6 +1,7 @@
 $:.unshift File.join(File.dirname(__FILE__),'..','lib')
 
 require 'test/unit'
+require 'commit'
 require 'bot'
 
 class BotTest < Test::Unit::TestCase
@@ -80,6 +81,15 @@ class BotTest < Test::Unit::TestCase
   def test_list_none
     msg = bot.cmd_list A_JID
     assert_equal 'You are not listening to any commits', msg
+  end
+
+  def test_commit_messages
+    bot.cmd_register(A_JID, '/proj1')
+    c = Commit.new('12345', 'arthur', '/proj1', 'fix bug 42')
+    msgs = bot.commit_messages c
+    assert_equal 1, msgs.size
+    assert_equal A_JID, msgs[0].to.to_s
+    assert_equal 'arthur committed 12345: fix bug 42', msgs[0].body
   end
 
   private

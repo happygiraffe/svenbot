@@ -40,6 +40,13 @@ class Bot
     return "You are listening for commits to: #{user.paths.join(', ')}"
   end
 
+  def commit_messages(commit)
+    msg = "#{commit.user} committed #{commit.id}: #{commit.message}"
+    @paths[commit.path_prefix].collect do |user|
+      html_message(msg).set_to(user.jid)
+    end
+  end
+
   private
 
   # Return an existing user or create a new one.
