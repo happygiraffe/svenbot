@@ -20,38 +20,38 @@ module Svenbot
       @bot = Bot.new(Repo.new("#{Dir.tmpdir}/repo"))
     end
 
+    def assert_message(expected_to, expected_body, msg)
+      assert_equal expected_to, msg.to.to_s
+      assert_equal expected_body, msg.body
+    end
+
     def test_register_message
       msg = bot.cmd_register A_JID, '/proj1'
-      assert_equal A_JID, msg.to.to_s
-      assert_equal 'You will get commits for: /proj1', msg.body
+      assert_message A_JID, 'You will get commits for: /proj1', msg
     end
 
     def test_register_message_for_two_projects
       msg = bot.cmd_register A_JID, '/proj1'
       msg = bot.cmd_register A_JID, '/proj2'
-      assert_equal A_JID, msg.to.to_s
-      assert_equal 'You will get commits for: /proj1, /proj2', msg.body
+      assert_message A_JID, 'You will get commits for: /proj1, /proj2', msg
     end
 
     def test_unregister_message
       msg = bot.cmd_register A_JID, '/proj1'
       msg = bot.cmd_unregister A_JID, '/proj1'
-      assert_equal A_JID, msg.to.to_s
-      assert_equal 'You will no longer get commits for: /proj1', msg.body
+      assert_message A_JID, 'You will no longer get commits for: /proj1', msg
     end
 
     def test_list
       msg = bot.cmd_register A_JID, '/proj1'
       msg = bot.cmd_register A_JID, '/proj2'
       msg = bot.cmd_list A_JID
-      assert_equal A_JID, msg.to.to_s
-      assert_equal 'You are listening for commits to: /proj1, /proj2', msg.body
+      assert_message A_JID, 'You are listening for commits to: /proj1, /proj2', msg
     end
 
     def test_list_none
       msg = bot.cmd_list A_JID
-      assert_equal A_JID, msg.to.to_s
-      assert_equal 'You are not listening to any commits', msg.body
+      assert_message A_JID, 'You are not listening to any commits', msg
     end
 
     def test_commit_messages
@@ -59,8 +59,7 @@ module Svenbot
       c = Commit.new('12345', 'arthur', '/proj1', 'fix bug 42')
       msgs = bot.commit_messages c
       assert_equal 1, msgs.size
-      assert_equal A_JID, msgs[0].to.to_s
-      assert_equal 'arthur committed 12345: fix bug 42', msgs[0].body
+      assert_message A_JID, 'arthur committed 12345: fix bug 42', msgs[0]
     end
 
     def test_commit_messages_understand_prefix
@@ -68,7 +67,7 @@ module Svenbot
       c = Commit.new('12345', 'arthur', '/proj1/README', 'fix bug 42')
       msgs = bot.commit_messages c
       assert_equal 1, msgs.size
-      assert_equal A_JID, msgs[0].to.to_s
+      assert_message A_JID, 'arthur committed 12345: fix bug 42', msgs[0]
     end
 
   end
