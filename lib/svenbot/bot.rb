@@ -10,6 +10,12 @@ module Svenbot
       @user_manager = UserManager.new
     end
 
+    def cmd_help(jid)
+      commands = self.class.public_instance_methods.grep(/^cmd_/).
+        collect { |m| m.sub( /^cmd_/, '' ) }.sort.join(', ')
+      return html_message("available commands: #{commands}").set_to(jid)
+    end
+
     def cmd_register(jid, path='/')
       @user_manager.register jid, path
       paths = @user_manager.paths_for jid

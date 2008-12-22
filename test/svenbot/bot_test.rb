@@ -70,5 +70,10 @@ module Svenbot
       assert_message A_JID, 'arthur committed 12345: fix bug 42', msgs[0]
     end
 
+    def test_help
+      msg = bot.cmd_help(A_JID)
+      assert_message A_JID, 'available commands: help, list, register, unregister', msg
+    end
+
   end
 end
