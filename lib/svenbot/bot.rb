@@ -13,7 +13,8 @@ module Svenbot
     def cmd_register(jid, path='/')
       @user_manager.register jid, path
       paths = @user_manager.paths_for jid
-      return "You will get commits for: #{paths.join(', ')}"
+      msg = "You will get commits for: #{paths.join(', ')}"
+      return html_message(msg).set_to(jid)
     end
 
 
@@ -21,17 +22,19 @@ module Svenbot
     def cmd_list(jid)
       paths = @user_manager.paths_for(jid)
       if paths.empty?
-        return 'You are not listening to any commits'
+        msg = 'You are not listening to any commits'
       else
-        return "You are listening for commits to: #{paths.join(', ')}"
+        msg = "You are listening for commits to: #{paths.join(', ')}"
       end
+      return html_message(msg).set_to(jid)
     end
 
     # Remove messages about commits to a certain +path+.  If not specified,
     # +path+ defaults to "/".
     def cmd_unregister(jid, path='/')
       @user_manager.unregister jid, path
-      return "You will no longer get commits for: #{path}"
+      msg = "You will no longer get commits for: #{path}"
+      return html_message(msg).set_to(jid)
     end
 
     # Return a list of messages to send out for +commit+.
