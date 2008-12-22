@@ -10,13 +10,23 @@ module Svenbot
       @user_manager = UserManager.new
     end
 
-    def cmd_help(jid)
+    def dispatch_cmd(msg)
+      cmd, args = msg.body.split(' ', 2)
+      method = "cmd_#{cmd}".to_sym
+      if self.class.method_defined? method
+        return self.send(method, msg.from, args)
+      else
+        return html_message("unknown command '#{cmd}'").set_to(msg.from)
+      end
+    end
+
+    def cmd_help(jid, unused)
       commands = self.class.public_instance_methods.grep(/^cmd_/).
         collect { |m| m.sub( /^cmd_/, '' ) }.sort.join(', ')
       return html_message("available commands: #{commands}").set_to(jid)
     end
 
-    def cmd_register(jid, path='/')
+    def cmd_register(jid, path)
       @user_manager.register jid, path
       paths = @user_manager.paths_for jid
       msg = "You will get commits for: #{paths.join(', ')}"
@@ -25,7 +35,7 @@ module Svenbot
 
 
     # Return a list of paths you are interested in commits for.
-    def cmd_list(jid)
+    def cmd_list(jid, unused)
       paths = @user_manager.paths_for(jid)
       if paths.empty?
         msg = 'You are not listening to any commits'
@@ -37,7 +47,7 @@ module Svenbot
 
     # Remove messages about commits to a certain +path+.  If not specified,
     # +path+ defaults to "/".
-    def cmd_unregister(jid, path='/')
+    def cmd_unregister(jid, path)
       @user_manager.unregister jid, path
       msg = "You will no longer get commits for: #{path}"
       return html_message(msg).set_to(jid)

@@ -5,12 +5,18 @@ $:.unshift File.join(File.dirname(__FILE__),'..','lib')
 
 require 'test/unit'
 require 'svenbot/bot'
+require 'svenbot/message'
 require 'svenbot/repo'
 require 'tmpdir'
 
+
+
 module Svenbot
   class BotTest < Test::Unit::TestCase
+    include Message
+
     attr_reader :bot
+
     # Sample data
     A_JID = 'me@example.com'
     # More sample data
@@ -45,12 +51,12 @@ module Svenbot
     def test_list
       msg = bot.cmd_register A_JID, '/proj1'
       msg = bot.cmd_register A_JID, '/proj2'
-      msg = bot.cmd_list A_JID
+      msg = bot.cmd_list A_JID, nil
       assert_message A_JID, 'You are listening for commits to: /proj1, /proj2', msg
     end
 
     def test_list_none
-      msg = bot.cmd_list A_JID
+      msg = bot.cmd_list A_JID, nil
       assert_message A_JID, 'You are not listening to any commits', msg
     end
 
@@ -71,8 +77,20 @@ module Svenbot
     end
 
     def test_help
-      msg = bot.cmd_help(A_JID)
+      msg = bot.cmd_help(A_JID, nil)
       assert_message A_JID, 'available commands: help, list, register, unregister', msg
+    end
+
+    def test_dispatch_cmd
+      in_msg = html_message('help').set_from(A_JID)
+      out_msg = bot.dispatch_cmd(in_msg)
+      assert_message A_JID, 'available commands: help, list, register, unregister', out_msg
+    end
+
+    def test_dispatch_cmd_unknown
+      in_msg = html_message('aardvark').set_from(A_JID)
+      out_msg = bot.dispatch_cmd(in_msg)
+      assert_message A_JID, "unknown command 'aardvark'", out_msg
     end
 
   end
