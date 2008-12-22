@@ -14,5 +14,10 @@ module Svenbot
     def meta_dir
       return "#{dir}/svenbot"
     end
+
+    # Create the meta directory if needed.
+    def make_meta_dir
+      Dir.mkdir(meta_dir) unless File.directory?(meta_dir)
+    end
   end
 end
