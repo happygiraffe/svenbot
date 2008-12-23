@@ -1,3 +1,5 @@
+#!/usr/bin/ruby
+#
 # Send a message to the bot.
 
 require 'socket'
