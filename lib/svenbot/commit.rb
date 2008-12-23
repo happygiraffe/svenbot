@@ -17,5 +17,28 @@ module Svenbot
       @path_prefix = path_prefix
       @message = message
     end
+
+    # Populate a new commit object from a repository
+    def self.from(repo, id)
+      user = `svnlook author '#{repo.dir}' -r '#{id}'`.chomp
+      message = `svnlook log '#{repo.dir}' -r '#{id}'`.chomp
+      paths = `svnlook changed '#{repo.dir}' -r '#{id}'`.split(/\n/)
+      paths.collect! { |p| p.sub(/^..../, '').chomp }
+      return Commit.new(id, user, pick_prefix(paths), message)
+    end
+
+    private
+
+    # Work out the common prefix of these paths.
+    # http://newsgroups.derkeiler.com/Archive/Comp/comp.lang.ruby/2007-08/msg00370.html
+    def self.pick_prefix(paths)
+      # A list of indexes of differing characters in a & b.
+      s = []
+      a, b = paths.max.split(//), paths.min.split(//)
+      # Note the index of each character that differs.
+      a.each_with_index{ |val,i| s << i if val != b[i] }
+      # Extract from the first char to the first differing char.
+      return (0...s[0]).collect { |j| a[j] }.join
+    end
   end
 end
