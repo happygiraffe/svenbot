@@ -1,0 +1,58 @@
+#!/usr/bin/ruby
+#
+# Fire up a new svenbot.
+
+require 'svenbot/bot'
+require 'svenbot/commit'
+require 'svenbot/repo'
+require 'yaml'
+
+gem 'xmpp4r-simple'
+require 'xmpp4r-simple'
+
+Jabber::debug = true if ENV['JABBER_DEBUG']
+
+repo = Svenbot::Repo.new(ARGV[0])
+if !File.directory?(repo.dir)
+  warn "repo '#{repo.dir}' does not exist"
+  exit 1
+end
+repo.make_meta_dir
+
+bot = Svenbot::Bot.new(repo)
+
+commits = []
+Thread.new do
+  sock_path = "#{repo.meta_dir}/sock"
+  # XXX Check for currently running svnbot
+  File.delete(sock_path) if File.exist?(sock_path)
+  sock = UNIXServer.new sock_path
+  loop do
+    s1 = sock.accept
+    msg = s1.recvfrom(256)[0]
+    # XXX A thread safe queue would be good.
+    commits << Svenbot::Commit.from(repo, msg)
+  end
+end
+
+config = YAML.load_file("#{repo.meta_dir}/config.yml")
+
+xmpp = Jabber::Simple.new(config[:connect_jid], config[:connect_password])
+loop do
+  xmpp.received_messages do |msg|
+    case msg.body
+    when /^quit\b/
+      xmpp.deliver(msg.from, "bye bye")
+      xmpp.disconnect
+      exit
+    else
+      result = bot.dispatch_cmd(msg)
+      xmpp.deliver(result.to, result)
+    end
+  end
+  while !commits.empty?
+    bot.commit_messages(commits.shift).each do |msg|
+      xmpp.deliver(msg.to, msg)
+    end
+  end
+end
