@@ -1,3 +1,5 @@
 == svenbot
 
-You should document your project here.
+Svenbot is a very simple Jabber bot.  It listens to commits through a subversion
+hook and sends out messages to anybody who has registered an interest in such
+things.
