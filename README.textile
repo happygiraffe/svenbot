@@ -4,4 +4,5 @@ Svenbot is a very simple Jabber bot.  It listens to commits through a subversion
 
 h3. TODO
 
+* Make it work. :)
 * Only send out notifications to available people.
