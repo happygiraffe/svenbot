@@ -24,6 +24,14 @@ Gem::Specification.new do |s|
     lib/svenbot/user_manager.rb
     svenbot.gemspec
   )
+  s.test_files = %w(
+    test/svenbot/bot_test.rb
+    test/svenbot/commit_test.rb
+    test/svenbot/message_test.rb
+    test/svenbot/repo_test.rb
+    test/svenbot/user_manager_test.rb
+    test/svenbot/user_test.rb
+  )
   s.require_path = "lib"
   s.bindir = "bin"
   s.add_dependency 'xmpp4r-simple'
