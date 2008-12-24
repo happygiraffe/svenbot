@@ -5,25 +5,13 @@ require 'rake/gempackagetask'
 require 'rake/rdoctask'
 require 'rake/testtask'
 
-spec = Gem::Specification.new do |s|
-  s.name = 'svenbot'
-  s.version = '0.0.1'
-  s.homepage = 'http://github.com/happygiraffe/svenbot/'
-  s.has_rdoc = true
-  s.extra_rdoc_files = ['LICENSE']
-  s.summary = 'A jabber bot for subversion commits.'
-  s.description = s.summary
-  s.author = 'Dominic Mitchell'
-  s.email = 'dom@happygiraffe.net'
-  s.executables = ['svenbot', 'svenbot-notify']
-  s.files = %w(LICENSE README.textile Rakefile) + Dir.glob("{bin,lib,spec}/**/*")
-  s.require_path = "lib"
-  s.bindir = "bin"
-  s.add_dependency 'xmpp4r-simple'
-  s.add_dependency 'xmpp4r'
-  # This stops a warning about it not being specified...
-  s.rubyforge_project = ' '
-end
+CLEAN.include("pkg")
+
+# http://gist.github.com/16215
+spec = nil
+data = IO.read("svenbot.gemspec")
+Thread.new { spec = eval("$SAFE = 3\n#{data}") }.join
+spec.validate
 
 Rake::GemPackageTask.new(spec) do |p|
   p.gem_spec = spec
