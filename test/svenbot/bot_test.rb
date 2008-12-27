@@ -36,6 +36,11 @@ module Svenbot
       assert_message A_JID, 'You will get commits for: /proj1', msg
     end
 
+    def test_register_message_default
+      msg = bot.cmd_register A_JID, ''
+      assert_message A_JID, 'You will get commits for: /', msg
+    end
+
     def test_register_message_for_two_projects
       msg = bot.cmd_register A_JID, '/proj1'
       msg = bot.cmd_register A_JID, '/proj2'

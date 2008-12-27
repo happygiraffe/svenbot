@@ -27,6 +27,7 @@ module Svenbot
     end
 
     def cmd_register(jid, path)
+      path = "/" if path.empty?
       @user_manager.register jid, path
       paths = @user_manager.paths_for jid
       msg = "You will get commits for: #{paths.join(', ')}"
