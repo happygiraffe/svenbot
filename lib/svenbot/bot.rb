@@ -49,6 +49,7 @@ module Svenbot
     # Remove messages about commits to a certain +path+.  If not specified,
     # +path+ defaults to "/".
     def cmd_unregister(jid, path)
+      path = "/" if path.empty?
       @user_manager.unregister jid, path
       msg = "You will no longer get commits for: #{path}"
       return html_message(msg).set_to(jid)

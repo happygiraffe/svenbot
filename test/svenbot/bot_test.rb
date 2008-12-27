@@ -53,6 +53,12 @@ module Svenbot
       assert_message A_JID, 'You will no longer get commits for: /proj1', msg
     end
 
+    def test_unregister_default
+      msg = bot.cmd_register A_JID, '/'
+      msg = bot.cmd_unregister A_JID, ''
+      assert_message A_JID, 'You will no longer get commits for: /', msg
+    end
+
     def test_list
       msg = bot.cmd_register A_JID, '/proj1'
       msg = bot.cmd_register A_JID, '/proj2'
