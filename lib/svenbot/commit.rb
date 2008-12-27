@@ -24,7 +24,9 @@ module Svenbot
       message = `svnlook log '#{repo.dir}' -r '#{id}'`.chomp
       paths = `svnlook changed '#{repo.dir}' -r '#{id}'`.split(/\n/)
       paths.collect! { |p| p.sub(/^..../, '').chomp }
-      return Commit.new(id, user, pick_prefix(paths), message)
+      prefix = pick_prefix(paths)
+      prefix = "/" if prefix.empty?
+      return Commit.new(id, user, prefix, message)
     end
 
     private
