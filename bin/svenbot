@@ -37,6 +37,8 @@ end
 
 config = YAML.load_file("#{repo.meta_dir}/config.yml")
 
+bot.viewvc_url = config[:viewvc_url]
+
 xmpp = Jabber::Simple.new(config[:connect_jid], config[:connect_password])
 loop do
   xmpp.received_messages do |msg|

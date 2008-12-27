@@ -4,6 +4,7 @@ require 'svenbot/user_manager'
 
 module Svenbot
   class Bot
+    attr_accessor :viewvc_url
     include Message
 
     def initialize(repo)
@@ -70,6 +71,9 @@ module Svenbot
       msg = CGI.escapeHTML(c.message)
       user = CGI.escapeHTML(c.user)
       cid = c.id
+      if viewvc_url
+        cid = "<a href='#{viewvc_url}?view=rev&rev=#{cid}'>#{cid}</a>"
+      end
       "<b>#{user}</b> committed #{cid}:<br/>#{msg}"
     end
   end
