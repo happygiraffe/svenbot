@@ -63,6 +63,11 @@ module Svenbot
       assert_equal [A_JID], um.users_for('/proj1')
     end
 
+    def test_users_for_path_empty
+      um.register(A_JID, '/')
+      assert_equal [A_JID], um.users_for('')
+    end
+
     def test_users_for_path_understands_prefixes
       um.register(A_JID, '/')
       assert_equal [A_JID], um.users_for('/proj1')

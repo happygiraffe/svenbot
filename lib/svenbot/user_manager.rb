@@ -38,6 +38,7 @@ module Svenbot
 
     # Return a sorted list of jids that have registered an interest in +path+
     def users_for(path)
+      path = "/" if path.empty?
       interested = Set.new
       while path != "/"
         interested.merge users_for_path(path)
