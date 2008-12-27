@@ -1,3 +1,4 @@
+require 'cgi'
 require 'svenbot/message'
 require 'svenbot/user_manager'
 
@@ -57,12 +58,20 @@ module Svenbot
 
     # Return a list of messages to send out for +commit+.
     def commit_messages(commit)
-      msg = "#{commit.user} committed #{commit.id}: #{commit.message}"
+      msg = format_commit_message commit
       @user_manager.users_for(commit.path_prefix).collect do |jid|
         html_message(msg).set_to(jid)
       end
     end
 
+    private
+
+    def format_commit_message(c)
+      msg = CGI.escapeHTML(c.message)
+      user = CGI.escapeHTML(c.user)
+      cid = c.id
+      "<b>#{user}</b> committed #{cid}:<br/>#{msg}"
+    end
   end
 
 end

@@ -76,7 +76,7 @@ module Svenbot
       c = Commit.new('12345', 'arthur', '/proj1', 'fix bug 42')
       msgs = bot.commit_messages c
       assert_equal 1, msgs.size
-      assert_message A_JID, 'arthur committed 12345: fix bug 42', msgs[0]
+      assert_message A_JID, 'arthur committed 12345:fix bug 42', msgs[0]
     end
 
     def test_commit_messages_understand_prefix
@@ -84,7 +84,7 @@ module Svenbot
       c = Commit.new('12345', 'arthur', '/proj1/README', 'fix bug 42')
       msgs = bot.commit_messages c
       assert_equal 1, msgs.size
-      assert_message A_JID, 'arthur committed 12345: fix bug 42', msgs[0]
+      assert_message A_JID, 'arthur committed 12345:fix bug 42', msgs[0]
     end
 
     def test_help
